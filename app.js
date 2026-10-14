@@ -202,8 +202,7 @@ function pageHome() {
   return `<main class="page">
     <header class="topbar">
       <div class="brand"><span class="brand-mark brand-logo" role="img" aria-label="Logo DiKantin"></span><span class="brand-name">Di<span>Kantin</span></span></div>
-      <button class="location-pill" type="button" data-action="nav-canteens">${icon("pin")} Kantin Pusat</button>
-      <button class="icon-button small" type="button" data-action="notifications" aria-label="Notifikasi">${icon("bell")}</button>
+      <button class="icon-button small home-notifications" type="button" data-action="notifications" aria-label="Notifikasi">${icon("bell")}</button>
     </header>
     <div class="greeting"><div><p>Halo, Budi Santos 👋</p><h1>Mau makan di mana<br />hari ini?</h1></div><span class="avatar">BS</span></div>
     <section class="promo-card"><div class="promo-content"><span class="promo-badge">PROMO SPESIAL KAMPUS</span><h2>Paket kenyang<br />hemat ujian!</h2><p>Makan siang hemat di kantin fakultas pilihanmu.</p><span class="promo-code">DISKON S/D 40% · KAMPUSHEMAT</span></div></section>
@@ -299,35 +298,39 @@ function pageTenants() {
     ${header("Pilih tenant & menu", true)}
     <div class="session-pill">${icon("bowl")} ${escapeHtml(state.canteen)}${tableSummary}</div>
     <div class="intro" style="margin-top:16px"><div class="eyebrow">Pilih sesuai seleramu</div><h1>Mau makan<br />apa hari ini?</h1><p>Buka pilihan tenant dan menu, lalu cari nama warung atau makanan.</p></div>
-    <div class="filter-row"><span class="chip active">Semua tenant (${tenants.length})</span></div>
+    <div class="selector-shortcuts" role="group" aria-label="Pilihan tenant dan menu">
+      <button class="chip ${state.tenantExpanded ? "active" : ""}" type="button" data-action="toggle-tenant-picker" aria-expanded="${state.tenantExpanded}">Pilih tenant</button>
+      <button class="chip ${state.menuExpanded ? "active" : ""} ${!state.tenantChosen ? "chip-disabled" : ""}" type="button" data-action="toggle-menu-picker" aria-expanded="${state.menuExpanded}" aria-disabled="${!state.tenantChosen}">Pilih menu</button>
+    </div>
+    ${tenant ? `<div class="selected-tenant-note">Tenant dipilih: <strong>${escapeHtml(tenant.name)}</strong></div>` : `<p class="picker-note">Pilih tenant dahulu, lalu pilih menu yang kamu suka.</p>`}
 
-    <section class="selector-card card">
-      <button class="selector-trigger" type="button" data-action="toggle-tenant-picker" aria-expanded="${state.tenantExpanded}">
-        <span class="selector-step">1</span><span class="selector-copy"><small>Pilih tenant</small><strong>${tenant ? escapeHtml(tenant.name) : "Pilih nama warung"}</strong></span><span class="selector-chevron" aria-hidden="true">⌄</span>
-      </button>
-      ${state.tenantExpanded ? `<div class="selector-panel">
-        <div class="search-box">${icon("search")}<input class="search-input" data-search="tenant" type="search" placeholder="Cari nama warung..." aria-label="Cari tenant" value="${escapeHtml(state.tenantQuery)}" /></div>
-        <div class="selector-options">${tenantMatches.length ? tenantMatches.map((item) => {
-          const index = tenants.indexOf(item);
-          const selected = state.tenantChosen && state.tenantIndex === index;
-          return `<button class="selector-option ${selected ? "selected" : ""}" type="button" data-action="select-tenant" data-index="${index}" data-tenant-option data-searchable="${escapeHtml([item.name, item.description, item.tag].join(" ").toLowerCase())}">
-            <span class="selector-option-copy"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.description)} · ${item.time}</small></span><span class="selector-option-status">${selected ? "Dipilih ✓" : "Pilih"}</span>
-          </button>`;
-        }).join("") : `<div class="empty-state selector-empty"><strong>Warung tidak ditemukan</strong><span>Coba kata pencarian lain.</span></div>`}</div>
-      </div>` : ""}
-    </section>
+    ${state.tenantExpanded ? `<section class="selector-panel card picker-panel">
+      <div class="section-head"><h2>Pilih tenant</h2><span class="tiny-text muted">${tenantMatches.length} warung</span></div>
+      <div class="search-box">${icon("search")}<input class="search-input" data-search="tenant" type="search" placeholder="Cari nama warung..." aria-label="Cari tenant" value="${escapeHtml(state.tenantQuery)}" /></div>
+      <div class="selector-options">${tenantMatches.length ? tenantMatches.map((item) => {
+        const index = tenants.indexOf(item);
+        const selected = state.tenantChosen && state.tenantIndex === index;
+        return `<button class="selector-option ${selected ? "selected" : ""}" type="button" data-action="select-tenant" data-index="${index}" data-tenant-option data-searchable="${escapeHtml([item.name, item.description, item.tag].join(" ").toLowerCase())}">
+          <span class="selector-option-photo"><img src="${item.image}" alt="" /></span><span class="selector-option-copy"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.description)} · ${item.time}</small></span><span class="selector-option-status">${selected ? "Dipilih ✓" : "Pilih"}</span>
+        </button>`;
+      }).join("") : `<div class="empty-state selector-empty"><strong>Warung tidak ditemukan</strong><span>Coba kata pencarian lain.</span></div>`}</div>
+    </section>` : ""}
 
-    <section class="selector-card card ${state.tenantChosen ? "" : "selector-card-disabled"}">
-      <button class="selector-trigger" type="button" data-action="toggle-menu-picker" aria-expanded="${state.menuExpanded}" aria-disabled="${!state.tenantChosen}">
-        <span class="selector-step">2</span><span class="selector-copy"><small>Pilih menu</small><strong>${state.tenantChosen ? `Menu dari ${escapeHtml(tenant.name)}` : "Pilih tenant terlebih dahulu"}</strong></span><span class="selector-chevron" aria-hidden="true">⌄</span>
-      </button>
-      ${state.menuExpanded && tenant ? `<div class="selector-panel">
-        <div class="search-box">${icon("search")}<input class="search-input" data-search="menu" type="search" placeholder="Cari nama menu..." aria-label="Cari menu" value="${escapeHtml(state.menuQuery)}" /></div>
-        <div class="selector-menu-list">${menuMatches.length ? menuMatches.map((item) => `<article class="card menu-item selector-menu-item" data-menu-option data-searchable="${escapeHtml([item.name, item.description, item.category].join(" ").toLowerCase())}">
-          <span class="menu-item-image"><img src="${item.image}" alt="${escapeHtml(item.name)}" /></span>
-          <div class="menu-item-main"><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.description)}</p><div class="menu-item-foot"><span class="price">${money(item.price)}</span><button class="add-button" type="button" data-action="add-item" data-id="${item.id}" aria-label="Tambah ${escapeHtml(item.name)}">+</button></div></div>
-        </article>`).join("") : `<div class="empty-state selector-empty"><strong>Menu tidak ditemukan</strong><span>Coba kata pencarian lain.</span></div>`}</div>
-      </div>` : !state.tenantChosen ? `<p class="selector-hint">Pilih tenant dahulu untuk membuka daftar menu.</p>` : ""}
+    ${state.menuExpanded && tenant ? `<section class="selector-panel card picker-panel">
+      <div class="section-head"><h2>Menu ${escapeHtml(tenant.name)}</h2><span class="tiny-text muted">${menuMatches.length} menu</span></div>
+      <div class="search-box">${icon("search")}<input class="search-input" data-search="menu" type="search" placeholder="Cari nama menu..." aria-label="Cari menu" value="${escapeHtml(state.menuQuery)}" /></div>
+      <div class="selector-menu-list">${menuMatches.length ? menuMatches.map((item) => `<article class="card menu-item selector-menu-item" data-menu-option data-searchable="${escapeHtml([item.name, item.description, item.category].join(" ").toLowerCase())}">
+        <span class="menu-item-image"><img src="${item.image}" alt="${escapeHtml(item.name)}" /></span>
+        <div class="menu-item-main"><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.description)}</p><div class="menu-item-foot"><span class="price">${money(item.price)}</span><button class="add-button" type="button" data-action="add-item" data-id="${item.id}" aria-label="Tambah ${escapeHtml(item.name)}">+</button></div></div>
+      </article>`).join("") : `<div class="empty-state selector-empty"><strong>Menu tidak ditemukan</strong><span>Coba kata pencarian lain.</span></div>`}</div>
+    </section>` : ""}
+
+    <section class="section recommendation-section">
+      <div class="section-head"><h2>Rekomendasi buat kamu</h2><span class="tiny-text muted">${menuItems.length} menu</span></div>
+      <div class="menu-recommendations">${menuItems.map((item) => `<article class="card recommendation-card">
+        <img class="recommendation-photo" src="${item.image}" alt="${escapeHtml(item.name)}" />
+        <div class="recommendation-copy"><span class="recommendation-category">${escapeHtml(item.category)}</span><h3>${escapeHtml(item.name)}</h3><div class="recommendation-foot"><span class="price">${money(item.price)}</span><button class="add-button" type="button" data-action="add-item" data-id="${item.id}" aria-label="Tambah ${escapeHtml(item.name)}">+</button></div></div>
+      </article>`).join("")}</div>
     </section>
   </main>
   ${state.tenantChosen && totalItems() > 0 ? `<div class="cart-dock"><div class="cart-dock-inner"><div class="cart-dock-copy"><strong>${totalItems()} item di keranjang</strong><span>${money(subtotal())} · ${pickupSummary}</span></div><button class="button" type="button" data-action="open-cart">Lihat pesanan ${icon("arrow")}</button></div></div>` : ""}`;
@@ -423,7 +426,6 @@ function pageSuccess() {
   return `<main class="page success-page">
     ${header("DiKantin", false, `<button class="icon-button small" type="button" data-action="nav-home" aria-label="Beranda">${icon("home")}</button>`)}
     <div class="success-top"><div class="success-burst">${icon("check")}</div><div class="eyebrow">Transaksi sukses</div><h1>Pesanan selesai!<br />Selamat menikmati 🎉</h1><p>Makananmu sudah diambil dari ${escapeHtml(tenants[state.tenantIndex].name)}. Terima kasih sudah mendukung tenant kantin kampus.</p></div>
-    <div class="points-card"><span class="points-icon">${icon("gift")}</span><div><strong>+30 Poin DiKantin</strong><span>Kumpulkan poin untuk voucher makan siang gratis.</span></div></div>
     <div class="card receipt-card"><div class="receipt-title"><strong>Ringkasan transaksi</strong><span>#DKT-2026-98124</span></div><div class="receipt-row"><span>Waktu selesai</span><strong>12:18 WIB</strong></div><div class="receipt-row"><span>${state.mode === "dinein" ? "Meja" : "Metode"}</span><strong>${state.mode === "dinein" ? `${escapeHtml(state.table)} · Kantin FT` : "Ambil sendiri · Kantin FT"}</strong></div><div class="receipt-row"><span>Pembayaran QRIS</span><strong>${money(totalPayable())}</strong></div></div>
     <section class="section card card-pad"><div class="section-head" style="margin:0"><h2>Bagaimana makanannya?</h2></div><p class="small-text muted" style="margin-top:5px">Bantu tenant dan teman kampus lainnya.</p>
       <div class="rating-options">${ratingLabels.map((label) => `<button class="rating-chip ${state.selectedRatings.includes(label) ? "selected" : ""}" type="button" data-action="rating" data-rating="${escapeHtml(label)}">${label}</button>`).join("")}</div>
@@ -433,6 +435,31 @@ function pageSuccess() {
     </section>
     <div class="success-actions"><button class="button" type="button" data-action="nav-home">Kembali ke beranda</button><button class="button outline-button" type="button" data-action="receipt">Lihat e-receipt</button></div>
     <p class="thanks">Terima kasih telah mendukung UMKM kantin kampus 🌱</p>
+  </main>`;
+}
+
+function pageProfile() {
+  return `<main class="page profile-page">
+    ${header("Profil pengguna", true)}
+    <section class="card profile-summary">
+      <span class="profile-avatar" aria-hidden="true">BS</span>
+      <div class="profile-identity"><span class="profile-label">Mahasiswa DiKantin</span><h1>Budi Santos</h1><p>Profil pengguna</p></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>Informasi akun</h2><span class="tiny-text muted">Data demo</span></div>
+      <div class="card profile-details">
+        <div class="profile-row"><span>Nama lengkap</span><strong>Budi Santos</strong></div>
+        <div class="profile-row"><span>Nomor Induk Mahasiswa</span><strong>2504</strong></div>
+        <div class="profile-row"><span>Status</span><strong class="profile-status"><i class="open-dot"></i> Mahasiswa aktif</strong></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>Akun saya</h2></div>
+      <button class="card profile-link-card" type="button" data-action="profile-orders">
+        <span class="profile-link-icon">${icon("receipt")}</span><span><strong>Riwayat pesanan</strong><small>Lihat status pesanan kantinmu</small></span>${icon("arrow", "green")}
+      </button>
+    </section>
+    <button class="button outline-button profile-logout" type="button" data-action="profile-logout">Keluar dari akun</button>
   </main>`;
 }
 
@@ -451,6 +478,7 @@ function render() {
     case "cart": page = pageCart(); activeNav = "tracking"; break;
     case "payment": page = pagePayment(); activeNav = "tracking"; break;
     case "tracking": page = pageTracking(); activeNav = "tracking"; break;
+    case "profile": page = pageProfile(); activeNav = "profile"; break;
     case "success": page = pageSuccess(); hasNav = false; break;
     default: page = pageLogin(); hasNav = false;
   }
@@ -505,7 +533,9 @@ root.addEventListener("click", (event) => {
     case "nav-canteens": go("canteens"); break;
     case "nav-scan": go("scan"); break;
     case "nav-tracking": go("tracking"); break;
-    case "nav-profile": showToast("Profil mahasiswa — fitur demo."); break;
+    case "nav-profile": go("profile"); break;
+    case "profile-orders": go("tracking"); break;
+    case "profile-logout": state.history = []; state.screen = "login"; render(); window.scrollTo(0, 0); break;
     case "notifications": showToast("Belum ada notifikasi baru."); break;
     case "choose-canteen": {
       const canteen = canteens[Number(button.dataset.index)];

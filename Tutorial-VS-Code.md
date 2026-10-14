@@ -1,48 +1,32 @@
-# Tutorial memperbarui DiKantin di VS Code
+# Tutorial revisi DiKantin di VS Code
 
-Tutorial ini untuk memasukkan perubahan desain ke folder proyek GitHub yang sudah kamu buka di VS Code.
+## Revisi yang sudah masuk
 
-## File yang perlu diganti
+- Tombol **Profil** sekarang membuka halaman profil pengguna demo Budi Santos (NIM 2504).
+- Kartu **+30 Poin DiKantin** di halaman pesanan selesai dihapus.
+- Tombol besar **Pilih tenant** dan **Pilih menu** diganti menjadi tombol kecil. Daftar tetap bisa dibuka dan dicari.
+- Halaman tenant kini menampilkan kartu **Rekomendasi buat kamu** dengan foto menu dan tombol tambah.
+- Tombol lokasi **Kantin Pusat** di bagian atas beranda dihilangkan.
 
-- Ganti seluruh isi **app.js** dengan file app.js dari paket pembaruan.
-- Ganti seluruh isi **style.css** dengan file style.css dari paket pembaruan.
-- Tambahkan **logo-dikantin.jpeg** ke folder **assets**.
-- Jangan hapus **index.html** atau foto makanan yang sudah ada.
+## Melihat perubahan di VS Code
 
-## Cara memasukkan file pembaruan
+1. Buka folder **DiKantin-Project-Baru** yang terhubung ke GitHub.
+2. Tekan **Ctrl + S** untuk menyimpan file yang terbuka.
+3. Jika **Live Server** belum berjalan, buka **index.html** lalu klik **Go Live** di pojok kanan bawah.
+4. Coba klik **Profil** di navigasi bawah. Lalu kembali ke beranda, pilih mode dan kantin, dan buka halaman tenant untuk melihat tombol pilihan serta kartu rekomendasi bergambar.
 
-1. Unduh **DiKantin-Mobile-VSCode-Update.zip**, klik kanan, lalu pilih **Extract All...**. Ekstrak ke folder sementara.
-2. Buka folder proyek lama di File Explorer, yaitu folder yang berisi **index.html**, **app.js**, dan folder **assets**.
-3. Dari folder hasil ekstrak, salin **app.js** dan **style.css** ke folder proyek lama. Saat Windows bertanya, pilih **Replace the files in the destination**.
-4. Dari folder hasil ekstrak, salin **assets/logo-dikantin.jpeg** ke folder **assets** di proyek lama. Jika Windows bertanya, pilih **Replace the file in the destination**.
-5. Kembali ke VS Code. Pastikan file **app.js**, **style.css**, dan **assets/logo-dikantin.jpeg** terlihat di Explorer.
-6. Tekan **Ctrl + S** untuk menyimpan. Jika Live Server sedang berjalan, halaman akan dimuat ulang otomatis.
+## Mengirim revisi ke GitHub
 
-## Perubahan yang dibuat
+1. Klik ikon **Source Control** di sisi kiri VS Code.
+2. Ketik pesan commit, misalnya `Revisi profil dan rekomendasi menu`.
+3. Klik **Commit**. Jika muncul pertanyaan untuk memasukkan semua perubahan ke commit, klik **Yes**.
+4. Klik ikon **Sync Changes** (dua panah melingkar) di samping nama branch `main` pada bagian bawah VS Code. Jika ada konfirmasi sinkronisasi, klik **OK**.
+5. Tunggu selesai. GitHub Pages akan menerbitkan perubahan; muat ulang halaman situs setelah beberapa menit.
 
-- Logo huruf “D” diganti dengan logo DiKantin yang kamu kirim.
-- Tulisan halaman masuk berubah menjadi “Selamat datang di kantin!”
-- Beranda berhenti setelah kartu tips; bagian “Kantin dekat kamu” dihapus.
-- Navigasi bawah hanya menampilkan **Beranda** dan **Profil**.
-- Judul pemilihan kantin menjadi “Pilih kantin fakultas favoritmu”.
-- Di halaman tenant, filter hanya menampilkan **Semua tenant**. Pilih tenant dan pilih menu memakai dua bagian yang bisa dibuka-tutup. Masing-masing punya kotak pencarian.
-- Jika memilih **Ambil sendiri**, setelah memilih kantin alur langsung ke tenant tanpa halaman scan meja.
-- Di alur **Makan di tempat**, kotak nomor meja di halaman scan dihapus. Tombol simulasi tetap memakai meja demo nomor 14, yang terlihat di halaman konfirmasi.
+## Jika ini pertama kali mengaktifkan GitHub Pages
 
-## Periksa tampilan di VS Code
-
-1. Buka **index.html** di VS Code.
-2. Klik **Go Live** di pojok kanan bawah.
-3. Coba masuk sebagai tamu, pilih mode, lalu pilih kantin.
-4. Pada halaman tenant, buka **Pilih tenant**, cari warung, lalu pilih. Setelah itu buka **Pilih menu** dan gunakan pencarian menu.
-
-## Kirim pembaruan ke GitHub Pages
-
-1. Di panel **Source Control**, stage file yang berubah dengan tombol **+**.
-2. Isi pesan commit, misalnya **Perbarui tampilan DiKantin**, lalu klik **Commit**.
-3. Klik **Sync Changes** atau pilih **Git: Push** dari Command Palette.
-4. Tunggu proses **Pages build and deployment** selesai di tab **Actions** GitHub. Setelah tanda centang hijau muncul, muat ulang alamat situsmu.
+Di repository GitHub, buka **Settings → Pages**. Pada **Build and deployment**, pilih **Deploy from a branch**, pilih **main** dan **/(root)**, lalu klik **Save**. Tautan situs akan muncul di bagian **GitHub Pages** setelah proses penerbitan selesai.
 
 ## Catatan
 
-Login, scan QR, pembayaran QRIS, dan status pesanan masih berupa simulasi di browser. Meja demo untuk dine-in tetap nomor 14 setelah tombol scan disimulasikan.
+Login, profil, scan QR, pembayaran QRIS, dan status pesanan adalah simulasi. Profil demo memakai nama Budi Santos dan NIM 2504.
